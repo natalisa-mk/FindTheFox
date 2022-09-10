@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
     private const int StartFieldSize = 5;
     private const int StartAnimalCount = 1;
     private const float ShowAnimDuration = 1f;
+    private const float WinDelay = 5f;
     
     private Cell[,] _cells;
     
@@ -203,7 +204,7 @@ public class GameController : MonoBehaviour
         _canvasGroup.interactable = false;
 
         var sequence = DOTween.Sequence();
-        sequence.AppendInterval(ShowAnimDuration);
+        sequence.AppendInterval(WinDelay);
         sequence.Append(_canvasGroup.DOFade(0, ShowAnimDuration / 2f));
 
         sequence.AppendCallback(()=>winPanel.gameObject.SetActive(true));
