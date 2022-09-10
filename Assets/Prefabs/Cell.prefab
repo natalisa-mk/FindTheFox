@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 5110896575301138484}
   - component: {fileID: 2178101916198099665}
   m_Layer: 5
-  m_Name: Text
+  m_Name: CellText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsAnimal: 0
-  TextField: {fileID: 2178101916198099665}
-  AnimalImage: {fileID: 3507163453785480387}
   X: 0
   Y: 0
+  textField: {fileID: 2178101916198099665}
+  animalImage: {fileID: 3507163453785480387}

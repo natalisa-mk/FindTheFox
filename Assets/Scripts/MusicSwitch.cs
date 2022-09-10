@@ -1,26 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class MusicSwitch : MonoBehaviour
 {
-    private Toggle musicToggle;
+    private Toggle _musicToggle;
 
     private void Start()
     {
-        musicToggle = GetComponent<Toggle>();
+        _musicToggle = GetComponent<Toggle>();
 
         if(PlayerPrefs.GetInt("Music") == 1)
         {
-            musicToggle.isOn = true;
+            _musicToggle.isOn = true;
         }
         else
         {
-            musicToggle.isOn = false;
+            _musicToggle.isOn = false;
         }
 
-        musicToggle.onValueChanged.AddListener(SwitchMusic);
+        _musicToggle.onValueChanged.AddListener(SwitchMusic);
 
     }
 

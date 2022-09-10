@@ -1,33 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private Cell CellPrefab;
-    [SerializeField] private Transform CellsHolder;
+    [SerializeField] private Cell cellPrefab;
+    [SerializeField] private Transform cellsHolder;
 
-    [SerializeField] private GameObject WinPanel;
-    [SerializeField] private Text LevelText;
-    [SerializeField] private Text LevelOnSceneText;
-    [SerializeField] private Text PlayerTotalPointsText;
-    [SerializeField] private Text WinPointsText;
-    [SerializeField] private Text AnimalOnFieldText;
+    [SerializeField] private Transform winPanel;
+    [SerializeField] private Text winPanelLevelText;
+    [SerializeField] private Text levelOnSceneText;
+    [SerializeField] private Text playerTotalPointsText;
+    [SerializeField] private Text winPointsText;
+    [SerializeField] private Text animalOnFieldText;
     
-    private CanvasGroup _canvasGroup;
-
+    [HideInInspector] public int AnimalsOnField;
+    
     private const int MaxFieldSize = 10;
     private const int MaxAnimalCount = 30;
-    private int _startFieldSize = 5;
-    private int _startAnimalCount = 1;
-
-    [HideInInspector] public int AnimalsOnField;
-
-    private Cell[,] cells;
-
-    public int CurLevel
+    private const int StartFieldSize = 5;
+    private const int StartAnimalCount = 1;
+    private const float ShowAnimDuration = 1f;
+    
+    private Cell[,] _cells;
+    
+    private CanvasGroup _canvasGroup;
+    
+    private static int CurLevel
     {
         get 
         {
@@ -40,33 +40,34 @@ public class GameController : MonoBehaviour
         set => PlayerPrefs.SetInt("CurLevel", value);
     }
 
-    private int lvlPoints;
-    public int TotalPlayerPoints
+    private int _lvlPoints;
+
+    private static int TotalPlayerPoints
     {
         get => PlayerPrefs.GetInt("PlayerPoints");
         set => PlayerPrefs.SetInt("PlayerPoints", value);
     }
 
-    public int CurFieldSize
+    private static int CurFieldSize
     {
         get 
         {
             if (!PlayerPrefs.HasKey("CurFieldSize"))
             {
-                PlayerPrefs.SetInt("CurFieldSize", _startFieldSize);
+                PlayerPrefs.SetInt("CurFieldSize", StartFieldSize);
             }
             return PlayerPrefs.GetInt("CurFieldSize");
         }
         set => PlayerPrefs.SetInt("CurFieldSize", value);
     }
 
-    public int CurAnimalCount
+    private static int CurAnimalCount
     {
         get 
         {
             if (!PlayerPrefs.HasKey("CurAnimalCount"))
             {
-                PlayerPrefs.SetInt("CurAnimalCount", _startAnimalCount);
+                PlayerPrefs.SetInt("CurAnimalCount", StartAnimalCount);
             }
             return PlayerPrefs.GetInt("CurAnimalCount");
         }
@@ -78,22 +79,48 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         Instance = this;
+        
+        _canvasGroup = cellsHolder.gameObject.GetComponent<CanvasGroup>();
 
-        WinPanel.SetActive(false);
-        _canvasGroup = CellsHolder.gameObject.GetComponent<CanvasGroup>();
+        SetStartValues();
+        StartGame();
+    }
 
-        cells = new Cell[CurFieldSize, CurFieldSize];
-
-        lvlPoints = CurFieldSize * CurFieldSize;
+    private void SetStartValues()
+    {
+        _cells = new Cell[CurFieldSize, CurFieldSize];
+        _lvlPoints = CurFieldSize * CurFieldSize;
+        
         AnimalsOnField = CurAnimalCount;
-        AnimalOnFieldText.text = AnimalsOnField.ToString();
+        animalOnFieldText.text = AnimalsOnField.ToString();
+        
+        playerTotalPointsText.text = TotalPlayerPoints.ToString();
+        winPanelLevelText.text = "Level " + CurLevel;
+        
+        levelOnSceneText.transform.localScale = Vector3.zero;
+        levelOnSceneText.DOFade(0, 0);
+        levelOnSceneText.text = "Level " + CurLevel;
 
-        PlaceCells();
-        PlaceAnimal();
+        winPanel.gameObject.SetActive(false);
+        winPanel.transform.position = new Vector3(0, 15, 0);
+        
+    }
 
-        PlayerTotalPointsText.text = TotalPlayerPoints.ToString();
-        LevelOnSceneText.text = "Level: " + CurLevel;
-        LevelText.text = "Level " + CurLevel;
+    private void StartGame()
+    {
+        _canvasGroup.alpha = 0;
+        
+        var sequence = DOTween.Sequence();
+        
+        sequence.Append(levelOnSceneText.DOFade(1, ShowAnimDuration / 2f));
+        sequence.Join(levelOnSceneText.transform.DOScale(Vector3.one, ShowAnimDuration));
+
+        sequence.AppendInterval(ShowAnimDuration);
+        sequence.Append(levelOnSceneText.DOFade(0, ShowAnimDuration / 2f));
+
+        sequence.AppendCallback(PlaceCells);
+        sequence.AppendCallback(PlaceAnimal);
+        sequence.Append(_canvasGroup.DOFade(1f, ShowAnimDuration));
     }
 
     private void PlaceCells()
@@ -108,11 +135,11 @@ public class GameController : MonoBehaviour
         {
             for (int y = 0; y < CurFieldSize; y++)
             {
-                var cell = Instantiate(CellPrefab, CellsHolder);
+                var cell = Instantiate(cellPrefab, cellsHolder);
 
-                cell.transform.position = new Vector3(x - (CurFieldSize / 2 - offset), y - (CurFieldSize / 2 - offset));
+                cell.transform.position = new Vector3(x - (CurFieldSize / 2f - offset), y - (CurFieldSize / 2f - offset));
                 cell.name = $"Cell: {x + 1} {y + 1}";
-                cells[x, y] = cell;
+                _cells[x, y] = cell;
                 cell.X = x;
                 cell.Y = y;
             }
@@ -125,13 +152,11 @@ public class GameController : MonoBehaviour
 
         while(animalsPlaced < AnimalsOnField)
         {
-            var randomCell = cells[Random.Range(0, CurFieldSize), Random.Range(0, CurFieldSize)];
+            var randomCell = _cells[Random.Range(0, CurFieldSize), Random.Range(0, CurFieldSize)];
 
-            if (!randomCell.IsAnimal)
-            {
-                randomCell.IsAnimal = true;
-                animalsPlaced++;
-            }
+            if (randomCell.IsAnimal) continue;
+            randomCell.IsAnimal = true;
+            animalsPlaced++;
         }
     }
 
@@ -140,7 +165,7 @@ public class GameController : MonoBehaviour
         var animalsCount = 0;
         for(int x = 0; x < CurFieldSize; x++)
         {
-            if(cells[x, row].IsAnimal)
+            if(_cells[x, row].IsAnimal)
             {
                 animalsCount++;
             }
@@ -148,7 +173,7 @@ public class GameController : MonoBehaviour
 
         for (int y = 0; y < CurFieldSize; y++)
         {
-            if (cells[col, y].IsAnimal)
+            if (_cells[col, y].IsAnimal)
             {
                 animalsCount++;
             }
@@ -160,49 +185,49 @@ public class GameController : MonoBehaviour
     public void AnimalsFound()
     {
         AnimalsOnField -= 1;
-        AnimalOnFieldText.text = AnimalsOnField.ToString();
+        animalOnFieldText.text = AnimalsOnField.ToString();
 
         if (AnimalsOnField <= 0)
         {
-            StartCoroutine(WinGame());
+            WinGame();
         }
     }
 
     public void CountPoints()
     {
-        lvlPoints -= 1;
+        _lvlPoints -= 1;
     }
 
-    private IEnumerator WinGame()
+    private void WinGame()
     {
         _canvasGroup.interactable = false;
-        yield return new WaitForSeconds(1);
 
-        while (_canvasGroup.alpha > 0)
-        {
-            _canvasGroup.alpha -= Time.deltaTime;
-            yield return null;
-        }
+        var sequence = DOTween.Sequence();
+        sequence.AppendInterval(ShowAnimDuration);
+        sequence.Append(_canvasGroup.DOFade(0, ShowAnimDuration / 2f));
 
-        WinPanel.SetActive(true);
-        float animTime = 0;
-        while(animTime <= 1)
-        {
-            WinPanel.transform.position = Vector3.Lerp(new Vector3(0, 15, 0), Vector3.zero, animTime);
-            animTime += Time.deltaTime;
-            yield return null;
-        }
+        sequence.AppendCallback(()=>winPanel.gameObject.SetActive(true));
+        sequence.Append(winPanel.DOMove(Vector3.zero, ShowAnimDuration)).SetEase(Ease.OutBack);
 
-        CellsHolder.gameObject.SetActive(false);
-        AudioManager.Instance.PlaySound("WinSound");
+        sequence.AppendCallback(() =>
+                {
+                    cellsHolder.gameObject.SetActive(false);
+                    AudioManager.Instance.PlaySound("WinSound");
 
+                    CalculateWinValues();
+                }
+            );
+    }
+
+    private void CalculateWinValues()
+    {
         CurLevel++;
-        TotalPlayerPoints += lvlPoints;
+        TotalPlayerPoints += _lvlPoints;
         CurFieldSize++;
         CurAnimalCount++;
 
-        WinPointsText.text = "Points: " + lvlPoints;
-        PlayerTotalPointsText.text = TotalPlayerPoints.ToString();
+        winPointsText.text = "Points: " + _lvlPoints;
+        playerTotalPointsText.text = TotalPlayerPoints.ToString();
 
         if(CurFieldSize > MaxFieldSize)
         {
@@ -219,8 +244,8 @@ public class GameController : MonoBehaviour
     {
         CurLevel = 1;
         TotalPlayerPoints = 0;
-        CurFieldSize = _startFieldSize;
-        CurAnimalCount = _startAnimalCount;
+        CurFieldSize = StartFieldSize;
+        CurAnimalCount = StartAnimalCount;
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

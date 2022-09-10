@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 [System.Serializable]
@@ -19,37 +17,36 @@ public class Sound
     [Range(0f, 0.5f)]
     public float RandomPitch = 0.1f;
 
-    public bool Loop = false;
+    public bool Loop;
 
-    private AudioSource source;
+    private AudioSource _source;
 
-    public void SetSource(AudioSource _source)
+    public void SetSource(AudioSource audioSource)
     {
-        source = _source;
-        source.clip = Clip;
-        source.loop = Loop;
+        _source = audioSource;
+        _source.clip = Clip;
+        _source.loop = Loop;
     }
 
     public void Play()
     {
-        source.volume = Volume * (1 + Random.Range(-RandomVolume / 2f, RandomVolume / 2f));
-        source.pitch = Pitch * (1 + Random.Range(-RandomPitch / 2f, RandomPitch / 2f));
-        source.Play();
+        _source.volume = Volume * (1 + Random.Range(-RandomVolume / 2f, RandomVolume / 2f));
+        _source.pitch = Pitch * (1 + Random.Range(-RandomPitch / 2f, RandomPitch / 2f));
+        _source.Play();
     }
 
     public void Stop()
     {
-        source.Stop();
+        _source.Stop();
     }
 }
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
-    [SerializeField]
-    Sound[] sounds;
+    [SerializeField] private Sound[] sounds;
 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -63,13 +60,13 @@ public class AudioManager : MonoBehaviour
 
     }
 
-    void Start()
+    private void Start()
     {
         for (int i = 0; i < sounds.Length; i++)
         {
-            GameObject _go = new GameObject("Sound_" + i + "_" + sounds[i].Name);
-            _go.transform.SetParent(this.transform);
-            sounds[i].SetSource(_go.AddComponent<AudioSource>());
+            var go = new GameObject("Sound_" + i + "_" + sounds[i].Name);
+            go.transform.SetParent(this.transform);
+            sounds[i].SetSource(go.AddComponent<AudioSource>());
         }
 
         if (PlayerPrefs.HasKey("Music"))
@@ -87,26 +84,26 @@ public class AudioManager : MonoBehaviour
         
     }
 
-    public void PlaySound(string _name)
+    public void PlaySound(string soundName)
     {
         for (int i = 0; i < sounds.Length; i++)
         {
-            if (sounds[i].Name == _name)
+            if (sounds[i].Name == soundName)
             {
                 sounds[i].Play();
                 return;
             }
         }
 
-        //No sound with _name.
-        Debug.LogWarning("AudioManager: Sound not found in list: " + _name);
+        //No sound with soundName.
+        Debug.LogWarning("AudioManager: Sound not found in list: " + soundName);
     }
 
-    public void StopSound(string _name)
+    public void StopSound(string soundName)
     {
         for (int i = 0; i < sounds.Length; i++)
         {
-            if (sounds[i].Name == _name)
+            if (sounds[i].Name == soundName)
             {
                 sounds[i].Stop();
                 return;
@@ -114,6 +111,6 @@ public class AudioManager : MonoBehaviour
         }
 
         //No sound with _name.
-        Debug.LogWarning("AudioManager: Sound not found in list: " + _name);
+        Debug.LogWarning("AudioManager: Sound not found in list: " + soundName);
     }
 }
