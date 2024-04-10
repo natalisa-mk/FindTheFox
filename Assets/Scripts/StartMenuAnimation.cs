@@ -6,7 +6,7 @@ public class StartMenuAnimation : MonoBehaviour
     [SerializeField] private RectTransform header;
     [SerializeField] private Transform menuPanel;
     
-    private const float HeaderFinalPosY = 324;
+    [SerializeField] private float headerFinalPosY = -256;
     private CanvasGroup _menuCanvasGroup;
 
     private const float AnimDelay = 1f;
@@ -26,7 +26,8 @@ public class StartMenuAnimation : MonoBehaviour
         var sequence = DOTween.Sequence();
 
         sequence.AppendInterval(AnimDelay);
-        sequence.Append(header.DOAnchorPosY(HeaderFinalPosY, HeaderMoveDuration));
+        sequence.Append(header.DOAnchorPosY(headerFinalPosY, HeaderMoveDuration));
+        sequence.AppendInterval(0.5f);
         sequence.Append(_menuCanvasGroup.DOFade(1, MenuFadeDuration));
     }
 }

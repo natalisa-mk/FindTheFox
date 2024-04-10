@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
     
     [HideInInspector] public int AnimalsOnField;
     
-    private const int MaxFieldSize = 10;
+    private const int MaxFieldSize = 9;
     private const int MaxAnimalCount = 30;
     private const int StartFieldSize = 5;
     private const int StartAnimalCount = 1;
@@ -223,8 +223,11 @@ public class GameController : MonoBehaviour
     private void CalculateWinValues()
     {
         CurLevel++;
+        if ((CurLevel % 2) != 0)
+        {
+            CurFieldSize++;
+        }
         TotalPlayerPoints += _lvlPoints;
-        CurFieldSize++;
         CurAnimalCount++;
 
         winPointsText.text = "Points: " + _lvlPoints;
@@ -248,6 +251,11 @@ public class GameController : MonoBehaviour
         CurFieldSize = StartFieldSize;
         CurAnimalCount = StartAnimalCount;
 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void Replay()
+    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
