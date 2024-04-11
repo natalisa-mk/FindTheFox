@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
 {
     [SerializeField] private Cell cellPrefab;
     [SerializeField] private Transform cellsHolder;
+    [SerializeField] private GridLayoutGroup gridLayoutGroup;
 
     [SerializeField] private Transform winPanel;
     [SerializeField] private Text winPanelLevelText;
@@ -126,19 +127,14 @@ public class GameController : MonoBehaviour
 
     private void PlaceCells()
     {
-        var offset = 0.5f;
-        if (CurFieldSize % 2 != 0)
-        {
-            offset = 0;
-        }
+        gridLayoutGroup.constraintCount = CurFieldSize;
 
         for (int x = 0; x < CurFieldSize; x++)
         {
             for (int y = 0; y < CurFieldSize; y++)
             {
                 var cell = Instantiate(cellPrefab, cellsHolder);
-
-                cell.transform.position = new Vector3(x - (CurFieldSize / 2f - offset), y - (CurFieldSize / 2f - offset));
+                
                 cell.name = $"Cell: {x + 1} {y + 1}";
                 _cells[x, y] = cell;
                 cell.X = x;

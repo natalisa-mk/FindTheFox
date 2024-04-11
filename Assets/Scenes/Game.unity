@@ -1681,6 +1681,7 @@ GameObject:
   m_Component:
   - component: {fileID: 666128691}
   - component: {fileID: 666128692}
+  - component: {fileID: 666128693}
   m_Layer: 5
   m_Name: CellsHolder
   m_TagString: Untagged
@@ -1719,6 +1720,30 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &666128693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666128690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_StartCorner: 2
+  m_StartAxis: 0
+  m_CellSize: {x: 115, y: 115}
+  m_Spacing: {x: 3, y: 3}
+  m_Constraint: 1
+  m_ConstraintCount: 1
 --- !u!1 &736488343
 GameObject:
   m_ObjectHideFlags: 0
@@ -3607,6 +3632,7 @@ MonoBehaviour:
   cellPrefab: {fileID: 6609679117129509974, guid: 94341df6344f5a6429e93c4aef2378ea,
     type: 3}
   cellsHolder: {fileID: 666128691}
+  gridLayoutGroup: {fileID: 666128693}
   winPanel: {fileID: 1082343453}
   winPanelLevelText: {fileID: 1463268950}
   levelOnSceneText: {fileID: 498863524}
