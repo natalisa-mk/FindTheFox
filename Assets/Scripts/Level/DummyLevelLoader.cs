@@ -38,6 +38,8 @@ namespace Level
                     cells[x, y] = CellType.Empty;
                 }
             }
+
+            cells[2, 2] = CellType.None; // Создала пустую
         
             return cells;
         }

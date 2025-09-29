@@ -2,14 +2,11 @@
 using UnityEngine.UI;
 using DG.Tweening;
 using Level;
-using TMPro.EditorUtilities;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private Cell cellPrefab;
+    [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private Transform cellsHolder;
-    [SerializeField] private GridLayoutGroup gridLayoutGroup;
-
     [SerializeField] private Transform winPanel;
     [SerializeField] private Text winPanelLevelText;
     [SerializeField] private Text levelOnSceneText;
@@ -21,10 +18,6 @@ public class GameController : MonoBehaviour
 
     private const float ShowAnimDuration = 1f;
     private const float WinDelay = 5f;
-    
-    private Cell[,] _cells;
-    
-    private CanvasGroup _canvasGroup;
     
     private int _lvlPoints;
     private int _hiddenTargets;
@@ -41,8 +34,6 @@ public class GameController : MonoBehaviour
     {
         Instance = this;
         
-        _canvasGroup = cellsHolder.gameObject.GetComponent<CanvasGroup>();
-
         SetStartValues();
         StartGame();
     }
@@ -51,7 +42,7 @@ public class GameController : MonoBehaviour
     {
         _levelData = CrossScenesData.CurrentLevelData;
         
-        _cells = new Cell[_levelData.Width, _levelData.Height];
+       
         _lvlPoints = _levelData.Width * _levelData.Height;
 
         animalOnFieldText.text = _levelData.CurrentTargetsCount.ToString();
@@ -81,62 +72,15 @@ public class GameController : MonoBehaviour
         sequence.AppendInterval(ShowAnimDuration);
         sequence.Append(levelOnSceneText.DOFade(0, ShowAnimDuration / 2f));
 
-        sequence.AppendCallback(PlaceCells);
+        //sequence.AppendCallback(PlaceCells);
         sequence.Append(_canvasGroup.DOFade(1f, ShowAnimDuration));
     }
 
-    private void PlaceCells()
-    {
-        gridLayoutGroup.constraintCount = _levelData.Width; // Не впевнена, що тут має бути ширина
-
-        for (int x = 0; x < _levelData.Width; x++)
-        {
-            for (int y = 0; y < _levelData.Height; y++)
-            {
-                //Має бути перевірка на відсутність клітини
-                
-                var cell = Instantiate(cellPrefab, cellsHolder);
-                
-                cell.name = $"Cell: {x + 1} {y + 1}";
-                _cells[x, y] = cell;
-                cell.X = x;
-                cell.Y = y;
-
-                if (_levelData.Cells[x, y] == CellType.Target)
-                {
-                    cell.IsAnimal = true;
-                }
-            }
-        }
-    }
     
-
-    public int FindAnimals(int col, int row)
-    {
-        var animalsCount = 0;
-        for(int x = 0; x < _levelData.Width; x++)
-        {
-            if(_cells[x, row].IsAnimal)
-            {
-                animalsCount++;
-            }
-        }
-
-        for (int y = 0; y < _levelData.Height; y++)
-        {
-            if (_cells[col, y].IsAnimal)
-            {
-                animalsCount++;
-            }
-        }
-
-        return animalsCount;
-    }
 
     public void AnimalsFound()
     {
-        
-         _hiddenTargets-= 1;
+        _hiddenTargets-= 1;
         animalOnFieldText.text = _hiddenTargets.ToString();
 
         if (_hiddenTargets <= 0)
@@ -145,7 +89,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void CountPoints()
+    public void DecreasePoints()
     {
         _lvlPoints -= 1;
     }
