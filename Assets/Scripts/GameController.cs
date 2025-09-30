@@ -10,8 +10,6 @@ public class GameController : MonoBehaviour
     [SerializeField] private Transform winPanel;
     [SerializeField] private Text winPanelLevelText;
     [SerializeField] private Text levelOnSceneText;
-    [SerializeField] private Text playerTotalPointsText;
-    [SerializeField] private Text winPointsText;
     [SerializeField] private Text animalOnFieldText;
     
     private LevelData _levelData;
@@ -19,7 +17,6 @@ public class GameController : MonoBehaviour
     private const float ShowAnimDuration = 1f;
     private const float WinDelay = 5f;
     
-    private int _lvlPoints;
     private int _hiddenTargets;
 
     private static int TotalPlayerPoints
@@ -42,13 +39,9 @@ public class GameController : MonoBehaviour
     {
         _levelData = CrossScenesData.CurrentLevelData;
         
-       
-        _lvlPoints = _levelData.Width * _levelData.Height;
-
         animalOnFieldText.text = _levelData.CurrentTargetsCount.ToString();
         _hiddenTargets = _levelData.CurrentTargetsCount;
         
-        playerTotalPointsText.text = TotalPlayerPoints.ToString();
         winPanelLevelText.text = "Level " + _levelData.CurrentLevel;
         
         levelOnSceneText.transform.localScale = Vector3.zero;
@@ -88,12 +81,7 @@ public class GameController : MonoBehaviour
             WinGame();
         }
     }
-
-    public void DecreasePoints()
-    {
-        _lvlPoints -= 1;
-    }
-
+    
     private void WinGame()
     {
         _canvasGroup.interactable = false;
@@ -109,40 +97,15 @@ public class GameController : MonoBehaviour
                 {
                     cellsHolder.gameObject.SetActive(false);
                     AudioManager.Instance.PlaySound("WinSound");
-
-                    CalculateWinValues();
                 }
             );
     }
 
-    private void CalculateWinValues()
-    {
-        //CurLevel++;
-        /*if ((CurLevel % 2) != 0)
-        {
-            CurFieldSize++;
-        }*/
-        TotalPlayerPoints += _lvlPoints;
-        //CurAnimalCount++;
-
-        winPointsText.text = "Points: " + _lvlPoints;
-        playerTotalPointsText.text = TotalPlayerPoints.ToString();
-
-        /*if(CurFieldSize > MaxFieldSize)
-        {
-            CurFieldSize = MaxFieldSize;
-        }
-
-        if(CurAnimalCount > MaxAnimalCount)
-        {
-            CurAnimalCount = MaxAnimalCount;
-        }*/
-    }
-
+    
     /*public void ResetProgress()
     {
         CurLevel = 1;
-        TotalPlayerPoints = 0;
+     
         CurFieldSize = StartFieldSize;
         CurAnimalCount = StartAnimalCount;
 

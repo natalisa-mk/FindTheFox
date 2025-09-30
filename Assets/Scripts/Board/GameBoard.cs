@@ -1,4 +1,3 @@
-using System;
 using Level;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,8 +6,6 @@ namespace Board
 {
     public class GameBoard : MonoBehaviour
     {
-        public event Action<int> OnHiddenTargetsChanged;
-    
         [SerializeField] private Cell cellPrefab;
         [SerializeField] private GameObject invisibleCellPrefab;
         [SerializeField] private Transform cellsHolder;
@@ -17,14 +14,12 @@ namespace Board
         private Cell[,] _cells;
     
         private LevelData _levelData;
-        private int _hiddenTargets;
+        
 
         private void Awake()
         {
             _levelData = CrossScenesData.CurrentLevelData;
-        
-            _hiddenTargets = _levelData.CurrentTargetsCount;
-        
+
             CreateCells();
         }
     
@@ -98,8 +93,6 @@ namespace Board
             }
         
             cell.DisplayHiddenTargets(targetsCount);
-            
-            GameController.Instance.DecreasePoints();
         }
 
         private bool CanCheckTargets(int x, int y, ref int foundTargets)
