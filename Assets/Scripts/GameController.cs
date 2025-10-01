@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using DG.Tweening;
 using Level;
+using Context;
 
 public class GameController : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private Text animalOnFieldText;
     
     private LevelData _levelData;
+    private IAudioManager _audioManager;
 
     private const float ShowAnimDuration = 1f;
     private const float WinDelay = 5f;
@@ -29,6 +31,7 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        _audioManager = ProjectContext.Services.Get<IAudioManager>();
         Instance = this;
         
         SetStartValues();
@@ -64,13 +67,11 @@ public class GameController : MonoBehaviour
 
         sequence.AppendInterval(ShowAnimDuration);
         sequence.Append(levelOnSceneText.DOFade(0, ShowAnimDuration / 2f));
-
-        //sequence.AppendCallback(PlaceCells);
+        
         sequence.Append(_canvasGroup.DOFade(1f, ShowAnimDuration));
     }
 
     
-
     public void AnimalsFound()
     {
         _hiddenTargets-= 1;
@@ -96,7 +97,7 @@ public class GameController : MonoBehaviour
         sequence.AppendCallback(() =>
                 {
                     cellsHolder.gameObject.SetActive(false);
-                    AudioManager.Instance.PlaySound("WinSound");
+                    _audioManager.PlaySound(TypeOfSound.Win);
                 }
             );
     }

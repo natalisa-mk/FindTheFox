@@ -24,12 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6287487540221292310}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.2870612, y: -0.13670191, z: -1.8955859}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6287487540221292311
 MonoBehaviour:
@@ -43,39 +44,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5735ddb069d45034799709837d06d941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds:
-  - Name: CellSound
-    Clip: {fileID: 8300000, guid: 8b337be0e08a75e44ae6cb9fae910d9b, type: 3}
-    Volume: 1
-    Pitch: 1
-    RandomVolume: 0.076
-    RandomPitch: 0.082
-    Loop: 0
-  - Name: AnimalFound
-    Clip: {fileID: 8300000, guid: f97778a99f4f0d04498e81c01bd42b2e, type: 3}
-    Volume: 1
-    Pitch: 1
-    RandomVolume: 0.076
-    RandomPitch: 0.082
-    Loop: 0
-  - Name: WinSound
-    Clip: {fileID: 8300000, guid: 0eb5508e2853b9a43a41812a4b8bd8fd, type: 3}
-    Volume: 1
-    Pitch: 1
-    RandomVolume: 0.076
-    RandomPitch: 0.082
-    Loop: 0
-  - Name: PressButton
-    Clip: {fileID: 8300000, guid: cf55aa7e9d9f68747a357ca1bb12b0c7, type: 3}
-    Volume: 1
-    Pitch: 1
-    RandomVolume: 0.076
-    RandomPitch: 0.082
-    Loop: 0
-  - Name: Music
-    Clip: {fileID: 8300000, guid: a11c24c7191444645b06db8e05a51c06, type: 3}
-    Volume: 1
-    Pitch: 1
-    RandomVolume: 0
-    RandomPitch: 0
-    Loop: 1
+  soundMixer: {fileID: -5221934917586758099, guid: 9a9c12ac2d4c8c14c8d9094206dc5562,
+    type: 2}
+  musicMixer: {fileID: 8861582739219229441, guid: 9a9c12ac2d4c8c14c8d9094206dc5562,
+    type: 2}
+  soundsList:
+  - type: 1
+    audioClips:
+    - {fileID: 8300000, guid: 8b337be0e08a75e44ae6cb9fae910d9b, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    source: {fileID: 0}
+  - type: 0
+    audioClips:
+    - {fileID: 8300000, guid: f97778a99f4f0d04498e81c01bd42b2e, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    source: {fileID: 0}
+  - type: 2
+    audioClips:
+    - {fileID: 8300000, guid: cf55aa7e9d9f68747a357ca1bb12b0c7, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    source: {fileID: 0}
+  - type: 3
+    audioClips:
+    - {fileID: 8300000, guid: 0eb5508e2853b9a43a41812a4b8bd8fd, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    source: {fileID: 0}
+  - type: 5
+    audioClips:
+    - {fileID: 8300000, guid: 227838880f932344988da23add55fbb8, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    source: {fileID: 0}
+  - type: 6
+    audioClips:
+    - {fileID: 8300000, guid: def30a6c969fbff43a30999e772f74ec, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 0
+    source: {fileID: 0}
+  musicList:
+  - type: 4
+    audioClips:
+    - {fileID: 8300000, guid: a11c24c7191444645b06db8e05a51c06, type: 3}
+    volume: 1
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 1
+    source: {fileID: 0}

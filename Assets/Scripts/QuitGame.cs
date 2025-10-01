@@ -14,7 +14,7 @@ public class QuitGame : MonoBehaviour
 
     private void GameQuit()
     {
-        AudioManager.Instance.PlaySound("PressButton");
+        //AudioManager.Instance.PlaySound("PressButton");
         Application.Quit();
     }
         

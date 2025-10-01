@@ -1,11 +1,12 @@
 ﻿using System;
+using Context;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Board
 {
     public class Cell : MonoBehaviour
-    { 
+    {
         public int X { get; private set; }
         public int Y { get; private set; }
 
@@ -14,6 +15,8 @@ namespace Board
     
         private Button _button;
         private Action<Cell> _onClicked;
+        
+        private IAudioManager _audioManager;
 
         public void Init(int x, int y, Action<Cell> onClicked)
         {
@@ -25,6 +28,8 @@ namespace Board
     
         private void Start()
         {
+            _audioManager = ProjectContext.Services.Get<IAudioManager>();
+            
             _button = GetComponent<Button>();
             _button.onClick.AddListener(OnClicked);
         }
@@ -37,7 +42,7 @@ namespace Board
 
         public void DisplayFoundTarget()
         {
-            AudioManager.Instance.PlaySound("AnimalFound");
+            _audioManager.PlaySound(TypeOfSound.TargetFound);
             targetImage.gameObject.SetActive(true);
 
             _button.enabled = false;
@@ -45,7 +50,7 @@ namespace Board
         
         public void DisplayHiddenTargets(int targetsCount)
         {
-            AudioManager.Instance.PlaySound("CellSound");
+            _audioManager.PlaySound(TypeOfSound.CellClick);
             targetsCountText.text = targetsCount.ToString();
             
             _button.enabled = false;

@@ -151,6 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41a8d60cf2351024ebb5e7926986a132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManagerPrefab: {fileID: 6287487540221292311, guid: 669042b4517cdf44e92211499e29257d,
+    type: 3}
 --- !u!4 &951787708
 Transform:
   m_ObjectHideFlags: 0
