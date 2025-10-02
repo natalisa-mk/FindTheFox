@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 using Level;
 using Context;
+using TMPro;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private CanvasGroup _canvasGroup;
+    [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Transform cellsHolder;
     [SerializeField] private Transform winPanel;
-    [SerializeField] private Text winPanelLevelText;
-    [SerializeField] private Text levelOnSceneText;
-    [SerializeField] private Text animalOnFieldText;
+    [SerializeField] private TextMeshProUGUI winPanelLevelText;
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI targetCountText;
     
     private LevelData _levelData;
     private IAudioManager _audioManager;
@@ -42,14 +42,14 @@ public class GameController : MonoBehaviour
     {
         _levelData = CrossScenesData.CurrentLevelData;
         
-        animalOnFieldText.text = _levelData.CurrentTargetsCount.ToString();
+        targetCountText.text = _levelData.CurrentTargetsCount.ToString();
         _hiddenTargets = _levelData.CurrentTargetsCount;
         
         winPanelLevelText.text = "Level " + _levelData.CurrentLevel;
         
-        levelOnSceneText.transform.localScale = Vector3.zero;
-        levelOnSceneText.DOFade(0, 0);
-        levelOnSceneText.text = "Level " + _levelData.CurrentLevel;
+        levelText.transform.localScale = Vector3.zero;
+        levelText.DOFade(0, 0);
+        levelText.text = "Level " + _levelData.CurrentLevel;
 
         winPanel.gameObject.SetActive(false);
         winPanel.transform.position = new Vector3(0, 15, 0);
@@ -58,24 +58,24 @@ public class GameController : MonoBehaviour
 
     private void StartGame()
     {
-        _canvasGroup.alpha = 0;
+        canvasGroup.alpha = 0;
         
         var sequence = DOTween.Sequence();
         
-        sequence.Append(levelOnSceneText.DOFade(1, ShowAnimDuration / 2f));
-        sequence.Join(levelOnSceneText.transform.DOScale(Vector3.one, ShowAnimDuration));
+        sequence.Append(levelText.DOFade(1, ShowAnimDuration / 2f));
+        sequence.Join(levelText.transform.DOScale(Vector3.one, ShowAnimDuration));
 
         sequence.AppendInterval(ShowAnimDuration);
-        sequence.Append(levelOnSceneText.DOFade(0, ShowAnimDuration / 2f));
+        sequence.Append(levelText.DOFade(0, ShowAnimDuration / 2f));
         
-        sequence.Append(_canvasGroup.DOFade(1f, ShowAnimDuration));
+        sequence.Append(canvasGroup.DOFade(1f, ShowAnimDuration));
     }
 
     
     public void AnimalsFound()
     {
         _hiddenTargets-= 1;
-        animalOnFieldText.text = _hiddenTargets.ToString();
+        targetCountText.text = _hiddenTargets.ToString();
 
         if (_hiddenTargets <= 0)
         {
@@ -85,11 +85,11 @@ public class GameController : MonoBehaviour
     
     private void WinGame()
     {
-        _canvasGroup.interactable = false;
+        canvasGroup.interactable = false;
 
         var sequence = DOTween.Sequence();
         sequence.AppendInterval(WinDelay);
-        sequence.Append(_canvasGroup.DOFade(0, ShowAnimDuration / 2f));
+        sequence.Append(canvasGroup.DOFade(0, ShowAnimDuration / 2f));
 
         sequence.AppendCallback(()=>winPanel.gameObject.SetActive(true));
         sequence.Append(winPanel.DOMove(Vector3.zero, ShowAnimDuration)).SetEase(Ease.OutBack);
